@@ -1,7 +1,4 @@
-package org.jrmjacp.processingservice.to_check.tests;
-
 import org.junit.jupiter.api.Test;
-
 public class HelloTest {
     @Test
     public void helloTest(){

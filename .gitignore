@@ -3,6 +3,8 @@
 .idea/
 tocken
 *tocken*
+*target*
+target
 # Compiled class file
 *.class
 
