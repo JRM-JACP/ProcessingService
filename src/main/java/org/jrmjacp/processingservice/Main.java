@@ -1,4 +1,4 @@
-package org.example;
+package org.jrmjacp.processingservice;
 
 public class Main {
     public static void main(String[] args) {
