@@ -8,15 +8,21 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+
+import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 public class DockerProcessing {
     private String exampleHostPath = "./to_check/examples/HelloClass.java";
     private String testHostPath = "./to_check/tests/HelloTest.java";
     private String exampleContainerPath = "/jrmjacp/src/main/java/jrm/jacp";
     private String testContainerPath = "/jrmjacp/src/test/java";
-    private String reportHostPath = "./testReports/";
+
+    private String txtReportHostPath = "./testReports/HelloTest.txt";
+    private String xmlReportHostPath = "./testReports/TEST-HelloTest.xml";
     private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/HelloTest.txt";
     private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-HelloTest.xml";
 
@@ -32,10 +38,13 @@ public class DockerProcessing {
                 .withRemotePath(testContainerPath).exec();
     }
 
-    public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container){
-        InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath).exec();
+    public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
+        //InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath).exec();
         InputStream xmlReport = client.copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath).exec();
-
+        //txtReport.available();
+        xmlReport.available();
+        //copyInputStreamToFile(txtReport, new File(txtReportHostPath));
+        copyInputStreamToFile(xmlReport, new File(xmlReportHostPath));
     }
 
     public DefaultDockerClientConfig getDefaultDockerConfig(){
@@ -59,7 +68,7 @@ public class DockerProcessing {
 
     public CreateContainerResponse createContainer(String imageName, DockerClient client){
         return client.createContainerCmd(imageName)
-                .withCmd("mvn", "test")
+                .withCmd("mvn", "clean", "test")
                 .exec();
     }
 
