@@ -8,14 +8,17 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 
+import java.io.InputStream;
 import java.time.Duration;
 
 public class DockerProcessing {
     private String exampleHostPath = "./to_check/examples/HelloClass.java";
     private String testHostPath = "./to_check/tests/HelloTest.java";
-
     private String exampleContainerPath = "/jrmjacp/src/main/java/jrm/jacp";
     private String testContainerPath = "/jrmjacp/src/test/java";
+    private String reportHostPath = "./testReports/";
+    private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/HelloTest.txt";
+    private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-HelloTest.xml";
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container){
         client.copyArchiveToContainerCmd(container.getId())
@@ -27,6 +30,12 @@ public class DockerProcessing {
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
                 .withRemotePath(testContainerPath).exec();
+    }
+
+    public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container){
+        InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath).exec();
+        InputStream xmlReport = client.copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath).exec();
+
     }
 
     public DefaultDockerClientConfig getDefaultDockerConfig(){
