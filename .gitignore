@@ -5,6 +5,7 @@ tocken
 *tocken*
 *target*
 target
+*.iml
 # Compiled class file
 *.class
 

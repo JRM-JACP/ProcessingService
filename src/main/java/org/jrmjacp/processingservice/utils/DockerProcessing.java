@@ -2,9 +2,13 @@ package org.jrmjacp.processingservice.utils;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.core.DockerClientImpl;
+import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
+import com.github.dockerjava.transport.DockerHttpClient;
+
+import java.time.Duration;
 
 public class DockerProcessing {
     private String exampleHostPath = "./to_check/examples/HelloClass.java";
@@ -29,8 +33,19 @@ public class DockerProcessing {
         return DefaultDockerClientConfig.createDefaultConfigBuilder().build();
     }
 
-    public DockerClient getDockerClient(DefaultDockerClientConfig config){
-        return DockerClientBuilder.getInstance(config).build();
+    public DockerHttpClient getDockerHttpClient(DefaultDockerClientConfig config){
+        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+                .dockerHost(config.getDockerHost())
+                .sslConfig(config.getSSLConfig())
+                .maxConnections(100)
+                .connectionTimeout(Duration.ofSeconds(30))
+                .responseTimeout(Duration.ofSeconds(45))
+                .build();
+        return httpClient;
+    }
+
+    public DockerClient getDockerClientInstance(DockerClientConfig config, DockerHttpClient httpClient){
+        return DockerClientImpl.getInstance(config, httpClient);
     }
 
     public CreateContainerResponse createContainer(String imageName, DockerClient client){
@@ -42,4 +57,6 @@ public class DockerProcessing {
     public void startDockerContainer(DockerClient client, CreateContainerResponse container){
         client.startContainerCmd(container.getId()).exec();
     }
+
+
 }
