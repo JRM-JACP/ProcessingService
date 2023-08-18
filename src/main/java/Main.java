@@ -14,17 +14,22 @@ public class Main {
         DockerHttpClient httpClient = dockerProcessing.getDockerHttpClient(config);
         DockerClient dockerClient = dockerProcessing.getDockerClientInstance(config, httpClient);
 
-        CreateContainerResponse container = dockerProcessing.createContainer("jrmjacp:1.0", dockerClient);
+
+        CreateContainerResponse container = dockerProcessing
+                .createContainer("jrmjacp:1.0", dockerClient);
         dockerProcessing.moveExampleToContainer(dockerClient, container);
         dockerProcessing.moveTestToContainer(dockerClient, container);
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
-        /*try {
+        try {
+            Thread.sleep(40000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }*/
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

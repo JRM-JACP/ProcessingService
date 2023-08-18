@@ -1,6 +1,7 @@
 package org.jrmjacp.processingservice.utils;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.AttachContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -39,11 +40,11 @@ public class DockerProcessing {
     }
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
-        //InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath).exec();
+        InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(),txtReportContainerPath).exec();
         InputStream xmlReport = client.copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath).exec();
-        //txtReport.available();
+        txtReport.available();
         xmlReport.available();
-        //copyInputStreamToFile(txtReport, new File(txtReportHostPath));
+        copyInputStreamToFile(txtReport, new File(txtReportHostPath));
         copyInputStreamToFile(xmlReport, new File(xmlReportHostPath));
     }
 
@@ -68,12 +69,20 @@ public class DockerProcessing {
 
     public CreateContainerResponse createContainer(String imageName, DockerClient client){
         return client.createContainerCmd(imageName)
-                .withCmd("mvn", "clean", "test")
+                .withName("jrm")
+                //.withCmd("cd", "/jrmjacp")
+                //.withCmd("mvn", "install")
+                .withCmd("sh", "runtests.sh")
                 .exec();
     }
 
     public void startDockerContainer(DockerClient client, CreateContainerResponse container){
         client.startContainerCmd(container.getId()).exec();
+    }
+
+    public void stopAndRemoveDockerContainer(DockerClient client, CreateContainerResponse container){
+        client.stopContainerCmd(container.getId()).exec();
+        client.removeContainerCmd(container.getId()).exec();
     }
 
 

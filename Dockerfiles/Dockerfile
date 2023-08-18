@@ -1,6 +1,9 @@
-FROM maven:3.8.7-openjdk-18-slim
+FROM openjdk:11
+RUN apt-get -y update && apt-get install -y maven
 WORKDIR /jrmjacp
-RUN chmod 755 /jrmjacp
-COPY . .
+COPY pom.xml .
 RUN mvn -B dependency:resolve dependency:resolve-plugins
-RUN mvn verify --fail-never
+#RUN chmod 777 /jrmjacp
+COPY runtests.sh .
+RUN chmod u+x runtests.sh
+COPY . .
