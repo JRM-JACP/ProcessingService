@@ -4,6 +4,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.jrmjacp.processingservice.utils.DockerProcessing;
+import org.jrmjacp.processingservice.utils.ReportUtils;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ public class Main {
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
+
         try {
             Thread.sleep(40000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
@@ -30,6 +32,10 @@ public class Main {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
+
+        ReportUtils reportUtils = new ReportUtils();
+        reportUtils.getTestResults();
 
     }
 }

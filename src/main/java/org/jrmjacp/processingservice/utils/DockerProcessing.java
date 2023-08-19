@@ -8,8 +8,12 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -22,8 +26,8 @@ public class DockerProcessing {
     private String exampleContainerPath = "/jrmjacp/src/main/java/jrm/jacp";
     private String testContainerPath = "/jrmjacp/src/test/java";
 
-    private String txtReportHostPath = "./testReports/HelloTest.txt";
-    private String xmlReportHostPath = "./testReports/TEST-HelloTest.xml";
+    private String txtReportHostPath = "./testReports/fromContainer/HelloTest.txt";
+    private String xmlReportHostPath = "./testReports/fromContainer/TEST-HelloTest.xml";
     private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/HelloTest.txt";
     private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-HelloTest.xml";
 
@@ -40,12 +44,34 @@ public class DockerProcessing {
     }
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
-        InputStream txtReport = client.copyArchiveFromContainerCmd(container.getId(),txtReportContainerPath).exec();
-        InputStream xmlReport = client.copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath).exec();
-        txtReport.available();
-        xmlReport.available();
-        copyInputStreamToFile(txtReport, new File(txtReportHostPath));
-        copyInputStreamToFile(xmlReport, new File(xmlReportHostPath));
+        TarArchiveInputStream txtReport = new TarArchiveInputStream(client
+                .copyArchiveFromContainerCmd(container.getId(),txtReportContainerPath)
+                .exec());
+        TarArchiveInputStream xmlReport = new TarArchiveInputStream(client
+                .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
+                .exec());
+
+        //txtReport.available();
+        //xmlReport.available();
+
+        unTar(txtReport, new File(txtReportHostPath));
+        unTar(xmlReport, new File(xmlReportHostPath));
+    }
+    private static void unTar(TarArchiveInputStream tis, File destFile)
+            throws IOException {
+        TarArchiveEntry tarEntry = null;
+        while ((tarEntry = tis.getNextTarEntry()) != null) {
+            if (tarEntry.isDirectory()) {
+                if (!destFile.exists()) {
+                    destFile.mkdirs();
+                }
+            } else {
+                FileOutputStream fos = new FileOutputStream(destFile);
+                IOUtils.copy(tis, fos);
+                fos.close();
+            }
+        }
+        tis.close();
     }
 
     public DefaultDockerClientConfig getDefaultDockerConfig(){

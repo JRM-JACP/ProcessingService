@@ -6,6 +6,7 @@ tocken
 *target*
 target
 *.iml
+testReports/*.*
 # Compiled class file
 *.class
 
