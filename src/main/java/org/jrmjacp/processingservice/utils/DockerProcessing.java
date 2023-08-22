@@ -21,15 +21,17 @@ import java.time.Duration;
 import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 public class DockerProcessing {
-    private String exampleHostPath = "./to_check/examples/HelloClass.java";
-    private String testHostPath = "./to_check/tests/HelloTest.java";
+    private String exampleHostPath = "./to_check/examples/BinarySearchExample.java";
+    private String testHostPath = "./to_check/tests/BinarySearchExampleTest.java";
     private String exampleContainerPath = "/jrmjacp/src/main/java/jrm/jacp";
     private String testContainerPath = "/jrmjacp/src/test/java";
 
-    private String txtReportHostPath = "./testReports/fromContainer/HelloTest.txt";
-    private String xmlReportHostPath = "./testReports/fromContainer/TEST-HelloTest.xml";
-    private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/HelloTest.txt";
-    private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-HelloTest.xml";
+    private String txtReportHostPath = "./testReports/fromContainer/BinarySearchExampleTest.txt";
+    private String xmlReportHostPath = "./testReports/fromContainer/TEST-BinarySearchExampleTest.xml";
+    private String perfomanceReportHostPath = "./testReports/fromContainer/perfomance.json";
+    private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/BinarySearchExampleTest.txt";
+    private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-BinarySearchExampleTest.xml";
+    private String perfomanceReportContainerPath = "/jrmjacp/target/surefire-reports/perfomance.json";
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container){
         client.copyArchiveToContainerCmd(container.getId())
@@ -50,12 +52,16 @@ public class DockerProcessing {
         TarArchiveInputStream xmlReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
                 .exec());
+        TarArchiveInputStream perfomanceReport = new TarArchiveInputStream(client
+                .copyArchiveFromContainerCmd(container.getId(), perfomanceReportContainerPath)
+                .exec());
 
         //txtReport.available();
         //xmlReport.available();
 
         unTar(txtReport, new File(txtReportHostPath));
         unTar(xmlReport, new File(xmlReportHostPath));
+        unTar(perfomanceReport, new File(perfomanceReportHostPath));
     }
     private static void unTar(TarArchiveInputStream tis, File destFile)
             throws IOException {
