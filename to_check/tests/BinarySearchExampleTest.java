@@ -1,7 +1,6 @@
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import to_check_example.BinarySearchExample;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +16,6 @@ public class BinarySearchExampleTest {
 
         System.out.println("Hello from a simple test");
         int[] intArray = {1,2,3,4,5,6,8,8,8,9,21,25,89,100,120,500,1000};
-        //List<Integer> intList = Arrays.stream(intArray).boxed().collect(Collectors.toList());
         BinarySearchExample binSearch = new BinarySearchExample();
         start = System.nanoTime();
         binSearch.runBinarySearchIteratively(intArray,89,0,intArray.length - 1);

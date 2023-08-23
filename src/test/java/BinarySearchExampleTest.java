@@ -14,14 +14,7 @@ public class BinarySearchExampleTest {
 
     @Test
     public void helloTest(){
-        /*System.out.println("Hello from a simple test");
-        System.out.println("maxMemory: " + Runtime.getRuntime().maxMemory() / MEASURE + " Kb");
-        System.out.println("free Memory   : " + Runtime.getRuntime().freeMemory() / MEASURE + " Kb");
-        System.out.println("total Memory  : " + Runtime.getRuntime().totalMemory() / MEASURE  + " Kb");
-        System.out.println("usedMemory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / MEASURE + " Kb");
-        System.out.println("**************************************************************************");*/
         int[] intArray = {1,2,3,4,5,6,8,8,8,9,21,25,89,100,120,500,1000};
-        //List<Integer> intList = Arrays.stream(intArray).boxed().collect(Collectors.toList());
         to_check_example.BinarySearchExample binSearch = new to_check_example.BinarySearchExample();
         start = System.nanoTime();
         binSearch.runBinarySearchIteratively(intArray,89,0,intArray.length - 1);

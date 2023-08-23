@@ -1,7 +1,6 @@
 package org.jrmjacp.processingservice.utils;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.AttachContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -11,14 +10,11 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Duration;
 
-import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 public class DockerProcessing {
     private String exampleHostPath = "./to_check/examples/BinarySearchExample.java";
@@ -55,9 +51,6 @@ public class DockerProcessing {
         TarArchiveInputStream perfomanceReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), perfomanceReportContainerPath)
                 .exec());
-
-        //txtReport.available();
-        //xmlReport.available();
 
         unTar(txtReport, new File(txtReportHostPath));
         unTar(xmlReport, new File(xmlReportHostPath));
