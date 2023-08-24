@@ -1,21 +1,18 @@
 package org.jrmjacp.processingservice.utils;
 
 import org.apache.maven.plugin.surefire.log.api.NullConsoleLogger;
-import org.apache.maven.plugins.surefire.report.ReportTestCase;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
-import org.testng.internal.TestResult;
 
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Locale.ENGLISH;
-
 public class ReportUtils {
     private String xmlReportHostPath = "./testReports/fromContainer";
-    public void getTestResults(){
+
+    public void getTestResults() {
         Path filePath = Path.of(xmlReportHostPath);
         final SurefireReportParser surefireReportParser = new SurefireReportParser(
                 Collections.singletonList(filePath.toFile()),

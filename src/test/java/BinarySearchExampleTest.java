@@ -13,11 +13,11 @@ public class BinarySearchExampleTest {
     private JSONObject json = new JSONObject();
 
     @Test
-    public void helloTest(){
-        int[] intArray = {1,2,3,4,5,6,8,8,8,9,21,25,89,100,120,500,1000};
+    public void helloTest() {
+        int[] intArray = {1, 2, 3, 4, 5, 6, 8, 8, 8, 9, 21, 25, 89, 100, 120, 500, 1000};
         to_check_example.BinarySearchExample binSearch = new to_check_example.BinarySearchExample();
         start = System.nanoTime();
-        binSearch.runBinarySearchIteratively(intArray,89,0,intArray.length - 1);
+        binSearch.runBinarySearchIteratively(intArray, 89, 0, intArray.length - 1);
         finish = System.nanoTime();
         timeElapsed = finish - start;
         System.out.println("timeElapsed_runBinarySearchIteratively : " + timeElapsed);

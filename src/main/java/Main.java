@@ -1,7 +1,6 @@
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.jrmjacp.processingservice.utils.DockerProcessing;
 import org.jrmjacp.processingservice.utils.ReportUtils;
@@ -25,7 +24,7 @@ public class Main {
 
 
         try {
-            Thread.sleep(40000);
+            Thread.sleep(60000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
         } catch (IOException e) {
             throw new RuntimeException(e);

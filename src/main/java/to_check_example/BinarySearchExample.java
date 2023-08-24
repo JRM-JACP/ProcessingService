@@ -10,7 +10,7 @@ public class BinarySearchExample {
         int index = Integer.MAX_VALUE;
 
         while (low <= high) {
-            int mid = low  + ((high - low) / 2);
+            int mid = low + ((high - low) / 2);
             if (sortedArray[mid] < key) {
                 low = mid + 1;
             } else if (sortedArray[mid] > key) {
@@ -23,9 +23,10 @@ public class BinarySearchExample {
 
         return index;
     }
+
     public int runBinarySearchRecursively(
             int[] sortedArray, int key, int low, int high) {
-        int middle = low  + ((high - low) / 2);
+        int middle = low + ((high - low) / 2);
 
         if (high < low) {
             return -1;
@@ -41,12 +42,13 @@ public class BinarySearchExample {
                     sortedArray, key, middle + 1, high);
         }
     }
-    public int runArraysBinarySearch(int [] sortedArray, int key){
+
+    public int runArraysBinarySearch(int[] sortedArray, int key) {
         return Arrays.binarySearch(sortedArray, key);
     }
 
 
-    public int runCollectionsBinarySearch(List<Integer> sortedList, int key){
+    public int runCollectionsBinarySearch(List<Integer> sortedList, int key) {
         return Collections.binarySearch(sortedList, key);
     }
 }

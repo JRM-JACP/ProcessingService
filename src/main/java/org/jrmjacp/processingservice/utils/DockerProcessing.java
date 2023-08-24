@@ -10,6 +10,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,13 +30,13 @@ public class DockerProcessing {
     private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-BinarySearchExampleTest.xml";
     private String perfomanceReportContainerPath = "/jrmjacp/target/surefire-reports/perfomance.json";
 
-    public void moveExampleToContainer(DockerClient client, CreateContainerResponse container){
+    public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
                 .withRemotePath(exampleContainerPath).exec();
     }
 
-    public void moveTestToContainer(DockerClient client, CreateContainerResponse container){
+    public void moveTestToContainer(DockerClient client, CreateContainerResponse container) {
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
                 .withRemotePath(testContainerPath).exec();
@@ -43,7 +44,7 @@ public class DockerProcessing {
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
-                .copyArchiveFromContainerCmd(container.getId(),txtReportContainerPath)
+                .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
                 .exec());
         TarArchiveInputStream xmlReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
@@ -56,6 +57,7 @@ public class DockerProcessing {
         unTar(xmlReport, new File(xmlReportHostPath));
         unTar(perfomanceReport, new File(perfomanceReportHostPath));
     }
+
     private static void unTar(TarArchiveInputStream tis, File destFile)
             throws IOException {
         TarArchiveEntry tarEntry = null;
@@ -73,11 +75,11 @@ public class DockerProcessing {
         tis.close();
     }
 
-    public DefaultDockerClientConfig getDefaultDockerConfig(){
+    public DefaultDockerClientConfig getDefaultDockerConfig() {
         return DefaultDockerClientConfig.createDefaultConfigBuilder().build();
     }
 
-    public DockerHttpClient getDockerHttpClient(DefaultDockerClientConfig config){
+    public DockerHttpClient getDockerHttpClient(DefaultDockerClientConfig config) {
         DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
@@ -88,11 +90,11 @@ public class DockerProcessing {
         return httpClient;
     }
 
-    public DockerClient getDockerClientInstance(DockerClientConfig config, DockerHttpClient httpClient){
+    public DockerClient getDockerClientInstance(DockerClientConfig config, DockerHttpClient httpClient) {
         return DockerClientImpl.getInstance(config, httpClient);
     }
 
-    public CreateContainerResponse createContainer(String imageName, DockerClient client){
+    public CreateContainerResponse createContainer(String imageName, DockerClient client) {
         return client.createContainerCmd(imageName)
                 .withName("jrm")
                 //.withCmd("cd", "/jrmjacp")
@@ -101,11 +103,11 @@ public class DockerProcessing {
                 .exec();
     }
 
-    public void startDockerContainer(DockerClient client, CreateContainerResponse container){
+    public void startDockerContainer(DockerClient client, CreateContainerResponse container) {
         client.startContainerCmd(container.getId()).exec();
     }
 
-    public void stopAndRemoveDockerContainer(DockerClient client, CreateContainerResponse container){
+    public void stopAndRemoveDockerContainer(DockerClient client, CreateContainerResponse container) {
         client.stopContainerCmd(container.getId()).exec();
         client.removeContainerCmd(container.getId()).exec();
     }
