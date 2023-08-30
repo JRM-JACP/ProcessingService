@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-processing-table
+      author: freesky15
+      changes:
+        - createTable:
+            tableName: processingresults
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: taskid
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: userid
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: result
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: score
+                  type: integer
+                  constraints:
+                    nullable: false
