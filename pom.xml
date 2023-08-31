@@ -28,6 +28,8 @@
         <postgresql.version>42.6.0</postgresql.version>
         <java.version>20</java.version>
         <liquibase-core.version>4.23.1</liquibase-core.version>
+        <slf4j.api.version>2.0.7</slf4j.api.version>
+        <maven.resources.plugin.version>3.3.0</maven.resources.plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -85,7 +87,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.7</version>
+            <version>${slf4j.api.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -113,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven.resources.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-jar-to-docker-context</id>
