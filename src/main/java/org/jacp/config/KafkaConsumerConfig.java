@@ -1,9 +1,7 @@
 package org.jacp.config;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.jacp.entity.QuestionSolution;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
