@@ -1,0 +1,15 @@
+spring:
+    liquibase:
+        enabled: true
+        change-log: classpath:/db/changelog/db.changelog-master.yaml
+    datasource:
+        url: jdbc:postgresql://localhost:5432/processing
+        username: postgres
+        password: postgres
+    jpa:
+        database: postgresql
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: none
+server:
+    port: 8080
