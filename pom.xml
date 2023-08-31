@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>ProcessingService</name>
     <description>ProcessingService</description>
+    <packaging>jar</packaging>
     <properties>
         <java.version>20</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -68,6 +69,11 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.8.0</version>
         </dependency>
     </dependencies>
     <build>
