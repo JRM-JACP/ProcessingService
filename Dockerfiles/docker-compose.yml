@@ -2,6 +2,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:14.4-alpine
+    container_name: processingservice_db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -13,8 +14,11 @@ services:
     ports:
       - '5432:5432'
   app:
+    image: processingservice:1.0
     build:
       context: ./processingservice
+
+    container_name: processingservice
     depends_on:
       - postgres
     environment:

@@ -14,8 +14,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
+                  name: arrivaltasktime
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
                   name: taskid
                   type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: solve
+                  type: text
                   constraints:
                     nullable: false
               - column:
@@ -24,12 +34,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: result
-                  type: varchar
+                  name: metrics
+                  type: jsonb
+                  constraints:
+                    nullable: true
+              - column:
+                  name: state
+                  type: varchar(50)
                   constraints:
                     nullable: false
               - column:
-                  name: score
-                  type: integer
+                  name: departureresulttime
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: result
+                  type: boolean
                   constraints:
                     nullable: false
