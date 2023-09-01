@@ -34,7 +34,7 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
     private String keySerializer;
     @Value(value = "${spring.kafka.consumer.value-serializer}")
     private String valueSerializer;
-    @Value(value = "jacp-competition-solutions-test")
+    @Value(value = "${spring.kafka.template.topic}")
     private String topic;
     @Value(value = "${spring.kafka.consumer.key-deserializer}")
     private String keyDeserializer;
@@ -74,7 +74,6 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
 
         ProducerRecord<String, QuestionSolution> record = new ProducerRecord<>(topic, questionSolution);
 
-        producer.flush();
         producer.close();
     }
 

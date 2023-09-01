@@ -8,4 +8,4 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     template:
-      default-topic: jacp-competition-solutions-test
+      topic: jacp-competition-solutions-test
