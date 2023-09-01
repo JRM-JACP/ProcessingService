@@ -12,7 +12,6 @@
         <version>3.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <properties>
         <java.version>20</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
