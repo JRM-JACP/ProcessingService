@@ -53,8 +53,3 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: true
-              - column:
-                  name: result
-                  type: boolean
-                  constraints:
-                    nullable: false
