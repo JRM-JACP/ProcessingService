@@ -1,0 +1,11 @@
+spring:
+  kafka:
+    consumer:
+      group-id: jacp-processing-consumer-group-test
+      auto-offset-reset: earliest
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    template:
+      default-topic: jacp-competition-solutions-test
