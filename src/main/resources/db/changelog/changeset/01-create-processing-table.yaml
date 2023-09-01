@@ -24,7 +24,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: solve
+                  name: solution
                   type: text
                   constraints:
                     nullable: false
@@ -44,10 +44,15 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: departureresulttime
+                  name: processingstarttime
                   type: timestamp
                   constraints:
-                    nullable: false
+                    nullable: true
+              - column:
+                  name: processingendtime
+                  type: timestamp
+                  constraints:
+                    nullable: true
               - column:
                   name: result
                   type: boolean
