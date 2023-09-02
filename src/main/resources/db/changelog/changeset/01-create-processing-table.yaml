@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-processing-table
+      author: freesky15
+      changes:
+        - createTable:
+            tableName: processingresults
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: arrivaltasktime
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: taskid
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: solution
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: userid
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: metrics
+                  type: jsonb
+                  constraints:
+                    nullable: true
+              - column:
+                  name: state
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: processingstarttime
+                  type: timestamp
+                  constraints:
+                    nullable: true
+              - column:
+                  name: processingendtime
+                  type: timestamp
+                  constraints:
+                    nullable: true
