@@ -179,7 +179,7 @@
                         </goals>
                         <phase>install</phase>
                         <configuration>
-                            <outputDirectory>${project.basedir}/Dockerfiles/processingservice</outputDirectory>
+                            <outputDirectory>DockerfilesProcessing/processingservice</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/target</directory>
