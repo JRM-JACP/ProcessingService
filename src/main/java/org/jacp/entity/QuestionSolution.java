@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class QuestionSolution {
-
     private Long id;
     private String problem;
     private String solution;
     private String tags;
     private String difficulty;
-
 }
