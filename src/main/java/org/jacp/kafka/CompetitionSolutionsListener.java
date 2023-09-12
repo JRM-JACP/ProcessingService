@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @author saffchen created on 26.08.2023
  */
 @Component
-public class CompetitionSolutionsListener implements MessageReceived {
+public class CompetitionSolutionsListener{
 
     private final MessageProcessor messageProcessor;
 
@@ -18,7 +18,6 @@ public class CompetitionSolutionsListener implements MessageReceived {
 
     @KafkaListener(topics = "${spring.kafka.template.default-topic}",
             groupId = "${spring.kafka.consumer.group-id}")
-    @Override
     public void consume(ConsumerRecord<?, ?> consumerRecord) {
         String message = consumerRecord.value().toString();
         messageProcessor.processMessage(message);
