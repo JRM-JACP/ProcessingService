@@ -1,9 +1,7 @@
-package org.jacp.kafka;
+package org.jacp.processor;
 
-import lombok.AllArgsConstructor;
 import org.jacp.controller.ProcessingController;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +9,18 @@ import org.springframework.stereotype.Component;
  * @author saffchen created on 12.09.2023
  */
 @Component
-public class MessageProcessor{
+public class MessageProcessor {
 
     private final ProcessingController processingController;
 
-    public MessageProcessor(ProcessingController processingController) {
+    private final JavaClassProcessor javaClassProcessor;
+
+    public MessageProcessor(ProcessingController processingController, JavaClassProcessor javaClassProcessor) {
         this.processingController = processingController;
+        this.javaClassProcessor = javaClassProcessor;
     }
 
-    public void processMessage(String message){
+    public void processMessage(String message) {
         String solutionIdString = message.substring(message.indexOf("id=") + "id=".length(), message.indexOf(","));
         Long solutionId = Long.parseLong(solutionIdString);
         ResponseEntity<String> response = processingController.getImportAndTest(solutionId);
@@ -35,5 +36,6 @@ public class MessageProcessor{
         System.out.println(imports);
         System.out.println(solution);
         System.out.println(test);
+        javaClassProcessor.createJavaClass(imports, solution, test);
     }
 }
