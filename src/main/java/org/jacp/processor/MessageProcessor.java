@@ -2,6 +2,7 @@ package org.jacp.processor;
 
 import org.jacp.controller.ProcessingController;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -11,31 +12,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageProcessor {
 
-    private final ProcessingController processingController;
+    @Autowired
+    private ProcessingController processingController;
+    @Autowired
+    private JavaClassProcessor javaClassProcessor;
 
-    private final JavaClassProcessor javaClassProcessor;
-
-    public MessageProcessor(ProcessingController processingController, JavaClassProcessor javaClassProcessor) {
-        this.processingController = processingController;
-        this.javaClassProcessor = javaClassProcessor;
-    }
-
-    public void processMessage(String message) {
+    public String processMessage(String message) {
         String solutionIdString = message.substring(message.indexOf("id=") + "id=".length(), message.indexOf(","));
-        Long solutionId = Long.parseLong(solutionIdString);
-        ResponseEntity<String> response = processingController.getImportAndTest(solutionId);
-
         String solution = message.substring(message.indexOf("solution=") + "solution=".length(), message.indexOf(", tags="));
+        String className = message.substring(message.indexOf("class") + "class".length(), message.indexOf("{"));
+        Long solutionId = Long.parseLong(solutionIdString);
+
+        ResponseEntity<String> response = processingController.getImportAndTest(solutionId);
 
         String responseGetBody = response.getBody();
         JSONObject jsonObject = new JSONObject(responseGetBody.substring(responseGetBody.indexOf("{")));
 
         String imports = jsonObject.getString("imports");
+        String testImports = jsonObject.getString("testImports");
         String test = jsonObject.getString("test");
 
-        System.out.println(imports);
-        System.out.println(solution);
-        System.out.println(test);
-        javaClassProcessor.createJavaClass(imports, solution, test);
+        String testClassName = test.substring(test.indexOf("class") + "class".length(), test.indexOf("{"));
+
+        return javaClassProcessor.createJavaClass(imports, testImports, className, testClassName, solution, test);
     }
 }

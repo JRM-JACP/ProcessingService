@@ -2,6 +2,7 @@ package org.jacp.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.jacp.processor.MessageProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -11,16 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompetitionSolutionsListener {
 
-    private final MessageProcessor messageProcessor;
-
-    public CompetitionSolutionsListener(MessageProcessor messageProcessor) {
-        this.messageProcessor = messageProcessor;
-    }
+    @Autowired
+    private MessageProcessor messageProcessor;
 
     @KafkaListener(topics = "${spring.kafka.template.default-topic}",
             groupId = "${spring.kafka.consumer.group-id}")
-    public void consume(ConsumerRecord<?, ?> consumerRecord) {
+    public String consume(ConsumerRecord<?, ?> consumerRecord) {
         String message = consumerRecord.value().toString();
-        messageProcessor.processMessage(message);
+        return messageProcessor.processMessage(message);
     }
 }
