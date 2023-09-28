@@ -26,6 +26,8 @@ public class MessageProcessor {
         ResponseEntity<String> response = processingController.getImportAndTest(solutionId);
 
         String responseGetBody = response.getBody();
+
+        assert responseGetBody != null;
         JSONObject jsonObject = new JSONObject(responseGetBody.substring(responseGetBody.indexOf("{")));
 
         String imports = jsonObject.getString("imports");
