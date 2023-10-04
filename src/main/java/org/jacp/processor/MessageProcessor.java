@@ -36,6 +36,6 @@ public class MessageProcessor {
 
         String testClassName = test.substring(test.indexOf("class") + "class".length(), test.indexOf("{"));
 
-        return javaClassProcessor.createJavaClass(imports, testImports, className, testClassName, solution, test);
+        return javaClassProcessor.startCreateClass(imports, className, solution, testImports, testClassName, test);
     }
 }
