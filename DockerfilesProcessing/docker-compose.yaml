@@ -1,0 +1,92 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - '29092:29092'
+
+  init-kafka:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION:-latest}
+    container_name: init-kafka
+    depends_on:
+      - kafka
+    entrypoint: [ "/bin/bash" , "-c" ]
+    command: |
+      "
+      sleep 5s
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic jacp-competition-solutions --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:9092 --list
+      "
+
+  akhq:
+    image: tchiotludo/akhq
+    container_name: akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka:9092"
+        micronaut:
+          security:
+            enabled: true
+            token:
+              jwt:
+                signatures:
+                  secret:
+                    generator:
+                      secret: test
+    ports:
+      - '9090:8080'
+    depends_on:
+      - kafka
+
+  postgres:
+    image: postgres:14.4-alpine
+    container_name: processingservice_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PROCESSING_DB_USER=docker
+      - PROCESSING_DB_PASSWORD=docker
+      - PROCESSING_DB_NAME=processing
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d/
+    ports:
+      - '5433:5432'
+
+  app:
+    image: processingservice:1.0
+    build:
+      context: ./processingservice
+
+    container_name: processingservice
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/processing
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - '8082:8080'

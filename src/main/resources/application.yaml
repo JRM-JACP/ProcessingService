@@ -1,0 +1,24 @@
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: jacp-processing-consumer-group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    template:
+      default-topic: jacp-competition-solutions
+  liquibase:
+      enabled: true
+      change-log: classpath:/db/changelog/db.changelog-master.yaml
+  datasource:
+      url: jdbc:postgresql://localhost:5433/processing
+      username: postgres
+      password: postgres
+  jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+          ddl-auto: none
+server:
+  port: 8082
