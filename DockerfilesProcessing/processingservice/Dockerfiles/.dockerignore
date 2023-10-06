@@ -1,4 +1,4 @@
 .idea
-Dockerfile*
+Dockerfile
 tasks
 docker-compose.yml

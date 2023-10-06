@@ -14,9 +14,15 @@ import java.util.UUID;
 @Component
 public class JavaClassProcessor {
 
-    public String createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
+    public static String randomPackageName;
+
+    public static String generatePackageName() {
         UUID uuid = UUID.randomUUID();
-        String randomPackageName = uuid.toString();
+        return uuid.toString();
+    }
+
+    public String createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
+        randomPackageName = generatePackageName();
         String sourcePath = String.format("toResult/%s/source", randomPackageName);
         String testPath = String.format("toResult/%s/test", randomPackageName);
         File file = new File(sourcePath);
@@ -40,7 +46,6 @@ public class JavaClassProcessor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return randomPackageName;
     }
 }

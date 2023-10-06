@@ -21,8 +21,8 @@
         <mockito-core.version>3.11.0</mockito-core.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <testcontainers.version>1.18.3</testcontainers.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.platform.version>1.8.1</junit.platform.version>
         <json.version>20230618</json.version>
@@ -38,8 +38,15 @@
         <maven.resources.plugin.version>3.3.0</maven.resources.plugin.version>
         <kafka.version>3.2.3</kafka.version>
         <dockerjava.version>3.3.3</dockerjava.version>
+        <surfire.version>3.1.2</surfire.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.core5/httpcore5-h2 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5-h2</artifactId>
+            <version>5.2.3</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
@@ -97,9 +104,14 @@
             <version>${dockerjava.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-report-parser</artifactId>
+            <version>${surfire.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.1.2</version>
+            <version>${surfire.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>

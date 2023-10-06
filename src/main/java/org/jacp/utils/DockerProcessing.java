@@ -10,25 +10,28 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
+import org.jacp.processor.JavaClassProcessor;
+import org.jacp.processor.MessageProcessor;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 
-
+@Service
 public class DockerProcessing {
-    private String exampleHostPath = "./to_check/examples/BinarySearchExample.java";
-    private String testHostPath = "./to_check/tests/BinarySearchExampleTest.java";
-    private String exampleContainerPath = "/jrmjacp/src/main/java/jrm/jacp";
-    private String testContainerPath = "/jrmjacp/src/test/java";
+    private String exampleHostPath = String.format("./toResult/%s/source/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.className);
+    private String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
+    private String exampleContainerPath = "/jacp/src/main/java/jrm/jacp";
+    private String testContainerPath = "/jacp/src/test/java";
 
-    private String txtReportHostPath = "./testReports/fromContainer/BinarySearchExampleTest.txt";
-    private String xmlReportHostPath = "./testReports/fromContainer/TEST-BinarySearchExampleTest.xml";
+    private String txtReportHostPath = String.format("./testReports/fromContainer/%s.txt", MessageProcessor.className);
+    private String xmlReportHostPath = String.format("./testReports/fromContainer/TEST-%s.xml", MessageProcessor.testClassName);
     private String perfomanceReportHostPath = "./testReports/fromContainer/perfomance.json";
-    private String txtReportContainerPath = "/jrmjacp/target/surefire-reports/BinarySearchExampleTest.txt";
-    private String xmlReportContainerPath = "/jrmjacp/target/surefire-reports/TEST-BinarySearchExampleTest.xml";
-    private String perfomanceReportContainerPath = "/jrmjacp/target/surefire-reports/perfomance.json";
+    private String txtReportContainerPath = String.format("/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
+    private String xmlReportContainerPath = String.format("/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
+    private String perfomanceReportContainerPath = "/org/jacp/target/surefire-reports/perfomance.json";
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
         client.copyArchiveToContainerCmd(container.getId())
@@ -111,6 +114,4 @@ public class DockerProcessing {
         client.stopContainerCmd(container.getId()).exec();
         client.removeContainerCmd(container.getId()).exec();
     }
-
-
 }
