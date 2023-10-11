@@ -35,16 +35,16 @@ public class JavaClassProcessor {
         try {
             String filePath = String.format(file + "/%s.java", className);
             BufferedWriter sourceClassWriter = new BufferedWriter(new FileWriter(filePath));
-            sourceClassWriter.write("package toResult;");
+            sourceClassWriter.write("package org.jacp;");
             sourceClassWriter.newLine();
             sourceClassWriter.write(imports + "\n" + solution);
             sourceClassWriter.close();
 
             String testFilePath = String.format(testFile + "/%s.java", testClassName);
             BufferedWriter testClassWriter = new BufferedWriter(new FileWriter(testFilePath));
-            testClassWriter.write("package toCheck;");
+            testClassWriter.write("package org.jacp;");
             testClassWriter.newLine();
-            testClassWriter.write(testImports + "import " + className + ";\n" + test);
+            testClassWriter.write(testImports + "import org.jacp " + className + ";\n" + test);
             testClassWriter.close();
 
             startDockerJava.startContainers();

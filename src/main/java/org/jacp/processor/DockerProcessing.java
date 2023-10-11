@@ -22,7 +22,7 @@ public class DockerProcessing {
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
         String exampleHostPath = String.format("./toResult/%s/source/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.className);
-        String exampleContainerPath = "/org/jacp";
+        String exampleContainerPath = "/src/main/java/org/jacp";
         System.out.println(exampleHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
@@ -31,7 +31,7 @@ public class DockerProcessing {
 
     public void moveTestToContainer(DockerClient client, CreateContainerResponse container) {
         String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
-        String testContainerPath = "/org/jacp/";
+        String testContainerPath = "/src/test/java/org/jacp";
         System.out.println(testHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
