@@ -1,5 +1,6 @@
 package org.jacp.processor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
@@ -13,6 +14,8 @@ import java.util.UUID;
  */
 @Component
 public class JavaClassProcessor {
+    @Autowired
+    StartDockerJava startDockerJava;
 
     public static String randomPackageName;
 
@@ -21,7 +24,7 @@ public class JavaClassProcessor {
         return uuid.toString();
     }
 
-    public String createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
+    public void createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
         randomPackageName = generatePackageName();
         String sourcePath = String.format("toResult/%s/source", randomPackageName);
         String testPath = String.format("toResult/%s/test", randomPackageName);
@@ -30,22 +33,23 @@ public class JavaClassProcessor {
         file.mkdirs();
         testFile.mkdirs();
         try {
-            String filePath = String.format(file + "/%s.java", className.trim());
+            String filePath = String.format(file + "/%s.java", className);
             BufferedWriter sourceClassWriter = new BufferedWriter(new FileWriter(filePath));
             sourceClassWriter.write("package toResult;");
             sourceClassWriter.newLine();
             sourceClassWriter.write(imports + "\n" + solution);
             sourceClassWriter.close();
 
-            String testFilePath = String.format(testFile + "/%s.java", testClassName.trim());
+            String testFilePath = String.format(testFile + "/%s.java", testClassName);
             BufferedWriter testClassWriter = new BufferedWriter(new FileWriter(testFilePath));
             testClassWriter.write("package toCheck;");
             testClassWriter.newLine();
-            testClassWriter.write(testImports + "import toResult." + className.trim() + ";\n" + test);
+            testClassWriter.write(testImports + "import " + className + ";\n" + test);
             testClassWriter.close();
+
+            startDockerJava.startContainers();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return randomPackageName;
     }
 }

@@ -3,12 +3,14 @@ package org.jacp.utils;
 import org.apache.maven.plugin.surefire.log.api.NullConsoleLogger;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
+import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class ReportUtils {
     private String xmlReportHostPath = "./testReports/fromContainer";
 
