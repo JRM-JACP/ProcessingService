@@ -1,19 +1,26 @@
+package org.jacp.processor;
+
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.transport.DockerHttpClient;
-import org.jacp.utils.DockerProcessing;
 import org.jacp.utils.ReportUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-public class Main {
-    public static void main(String[] args) {
-        DockerProcessing dockerProcessing = new DockerProcessing();
+@Service
+public class StartDockerJava {
+
+    @Autowired
+    DockerProcessing dockerProcessing;
+
+    public void startContainers() {
+
         DefaultDockerClientConfig config = dockerProcessing.getDefaultDockerConfig();
         DockerHttpClient httpClient = dockerProcessing.getDockerHttpClient(config);
         DockerClient dockerClient = dockerProcessing.getDockerClientInstance(config, httpClient);
-
 
         CreateContainerResponse container = dockerProcessing
                 .createContainer("jrmjacp:1.0", dockerClient);
@@ -21,7 +28,6 @@ public class Main {
         dockerProcessing.moveTestToContainer(dockerClient, container);
 
         dockerProcessing.startDockerContainer(dockerClient, container);
-
 
         try {
             Thread.sleep(60000);
@@ -35,6 +41,5 @@ public class Main {
 
         ReportUtils reportUtils = new ReportUtils();
         reportUtils.getTestResults();
-
     }
 }

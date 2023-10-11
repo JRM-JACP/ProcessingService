@@ -1,7 +1,6 @@
 package org.jacp.processor;
 
 import org.jacp.service.QuestionTestRequest;
-import org.jacp.utils.DockerProcessing;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,6 @@ import java.util.Objects;
 public class MessageProcessor {
 
     @Autowired
-    public DockerProcessing dockerProcessing;
-    @Autowired
     private QuestionTestRequest service;
 
     @Autowired
@@ -30,7 +27,7 @@ public class MessageProcessor {
     public String processMessage(String message) {
         String solutionIdString = message.substring(message.indexOf("id=") + "id=".length(), message.indexOf(","));
         solution = message.substring(message.indexOf("solution=") + "solution=".length(), message.indexOf(", tags="));
-        className = message.substring(message.indexOf("class") + "class".length(), message.indexOf("{"));
+        className = message.substring(message.indexOf("class") + "class".length(), message.indexOf("{")).trim();
         Long solutionId = Long.parseLong(solutionIdString);
 
         responseToQuestion(solutionId);
@@ -50,7 +47,7 @@ public class MessageProcessor {
         String testImports = jsonObject.getString("testImports");
         String test = jsonObject.getString("test");
 
-        testClassName = test.substring(test.indexOf("class") + "class".length(), test.indexOf("{"));
+        testClassName = test.substring(test.indexOf("class") + "class".length(), test.indexOf("{")).trim();
 
         javaClassProcessor.createJavaClass(imports, testImports, className, testClassName, solution, test);
         return testClassName;

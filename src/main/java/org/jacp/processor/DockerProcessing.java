@@ -1,4 +1,4 @@
-package org.jacp.utils;
+package org.jacp.processor;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -10,8 +10,6 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
-import org.jacp.processor.JavaClassProcessor;
-import org.jacp.processor.MessageProcessor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,31 +19,33 @@ import java.time.Duration;
 
 @Service
 public class DockerProcessing {
-    private String exampleHostPath = String.format("./toResult/%s/source/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.className);
-    private String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
-    private String exampleContainerPath = "/jacp/src/main/java/jrm/jacp";
-    private String testContainerPath = "/jacp/src/test/java";
-
-    private String txtReportHostPath = String.format("./testReports/fromContainer/%s.txt", MessageProcessor.className);
-    private String xmlReportHostPath = String.format("./testReports/fromContainer/TEST-%s.xml", MessageProcessor.testClassName);
-    private String perfomanceReportHostPath = "./testReports/fromContainer/perfomance.json";
-    private String txtReportContainerPath = String.format("/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
-    private String xmlReportContainerPath = String.format("/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
-    private String perfomanceReportContainerPath = "/org/jacp/target/surefire-reports/perfomance.json";
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
+        String exampleHostPath = String.format("./toResult/%s/source/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.className);
+        String exampleContainerPath = "/org/jacp";
+        System.out.println(exampleHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
                 .withRemotePath(exampleContainerPath).exec();
     }
 
     public void moveTestToContainer(DockerClient client, CreateContainerResponse container) {
+        String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
+        String testContainerPath = "/org/jacp/";
+        System.out.println(testHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
                 .withRemotePath(testContainerPath).exec();
     }
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
+        String txtReportHostPath = String.format("./testReports/fromContainer/%s.txt", MessageProcessor.className);
+        String xmlReportHostPath = String.format("./testReports/fromContainer/TEST-%s.xml", MessageProcessor.testClassName);
+        String performanceReportHostPath = "./testReports/fromContainer/perfomance.json";
+        String txtReportContainerPath = String.format("/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
+        String xmlReportContainerPath = String.format("/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
+        String performanceReportContainerPath = "/org/jacp/target/surefire-reports/perfomance.json";
+
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
                 .exec());
@@ -53,12 +53,12 @@ public class DockerProcessing {
                 .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
                 .exec());
         TarArchiveInputStream perfomanceReport = new TarArchiveInputStream(client
-                .copyArchiveFromContainerCmd(container.getId(), perfomanceReportContainerPath)
+                .copyArchiveFromContainerCmd(container.getId(), performanceReportContainerPath)
                 .exec());
 
         unTar(txtReport, new File(txtReportHostPath));
         unTar(xmlReport, new File(xmlReportHostPath));
-        unTar(perfomanceReport, new File(perfomanceReportHostPath));
+        unTar(perfomanceReport, new File(performanceReportHostPath));
     }
 
     private static void unTar(TarArchiveInputStream tis, File destFile)
@@ -99,8 +99,8 @@ public class DockerProcessing {
 
     public CreateContainerResponse createContainer(String imageName, DockerClient client) {
         return client.createContainerCmd(imageName)
-                .withName("jrm")
-                //.withCmd("cd", "/jrmjacp")
+                .withName("jacp")
+                //.withCmd("cd", "/jacp")
                 //.withCmd("mvn", "install")
                 .withCmd("sh", "runtests.sh")
                 .exec();
