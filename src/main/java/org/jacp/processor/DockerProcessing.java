@@ -41,10 +41,10 @@ public class DockerProcessing {
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
         String txtReportHostPath = String.format("./testReports/fromContainer/%s.txt", MessageProcessor.className);
         String xmlReportHostPath = String.format("./testReports/fromContainer/TEST-%s.xml", MessageProcessor.testClassName);
-        String performanceReportHostPath = "./testReports/fromContainer/perfomance.json";
+        String performanceReportHostPath = "./testReports/fromContainer/performance.json";
         String txtReportContainerPath = String.format("/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
         String xmlReportContainerPath = String.format("/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
-        String performanceReportContainerPath = "/org/jacp/target/surefire-reports/perfomance.json";
+        String performanceReportContainerPath = "/org/jacp/target/surefire-reports/performance.json";
 
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
@@ -52,13 +52,13 @@ public class DockerProcessing {
         TarArchiveInputStream xmlReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
                 .exec());
-        TarArchiveInputStream perfomanceReport = new TarArchiveInputStream(client
+        TarArchiveInputStream performanceReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), performanceReportContainerPath)
                 .exec());
 
         unTar(txtReport, new File(txtReportHostPath));
         unTar(xmlReport, new File(xmlReportHostPath));
-        unTar(perfomanceReport, new File(performanceReportHostPath));
+        unTar(performanceReport, new File(performanceReportHostPath));
     }
 
     private static void unTar(TarArchiveInputStream tis, File destFile)

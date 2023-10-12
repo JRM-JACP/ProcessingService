@@ -44,7 +44,7 @@ public class JavaClassProcessor {
             BufferedWriter testClassWriter = new BufferedWriter(new FileWriter(testFilePath));
             testClassWriter.write("package org.jacp;");
             testClassWriter.newLine();
-            testClassWriter.write(testImports + "import org.jacp " + className + ";\n" + test);
+            testClassWriter.write(testImports + "import org.jacp." + className + ";\n" + test);
             testClassWriter.close();
 
             startDockerJava.startContainers();
