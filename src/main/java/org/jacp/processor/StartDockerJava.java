@@ -8,10 +8,14 @@ import org.jacp.utils.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 
 @Service
 public class StartDockerJava {
+
+    @Autowired
+    ReportUtils reportUtils;
 
     @Autowired
     DockerProcessing dockerProcessing;
@@ -29,17 +33,17 @@ public class StartDockerJava {
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
+        String path = String.format("%s%s", DockerProcessing.hostPath, JavaClassProcessor.randomPackageName);
+        File file = new File(path);
         try {
-            Thread.sleep(60000);
+            Thread.sleep(40000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
-        } catch (IOException e) {
+            Thread.sleep(20000);
+            dockerProcessing.deleteSourceFile(file);
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } finally {
+            dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
         }
-        dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
-
-        ReportUtils reportUtils = new ReportUtils();
-        reportUtils.getTestResults();
     }
 }
