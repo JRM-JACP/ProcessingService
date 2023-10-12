@@ -30,11 +30,9 @@ public class StartDockerJava {
         dockerProcessing.startDockerContainer(dockerClient, container);
 
         try {
-            Thread.sleep(60000);
+            Thread.sleep(5000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);

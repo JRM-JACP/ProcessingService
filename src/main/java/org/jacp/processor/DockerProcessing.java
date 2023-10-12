@@ -22,7 +22,7 @@ public class DockerProcessing {
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
         String exampleHostPath = String.format("./toResult/%s/source/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.className);
-        String exampleContainerPath = "/src/main/java/org/jacp";
+        String exampleContainerPath = "/ProcessingService/src/main/java/org/jacp";
         System.out.println(exampleHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
@@ -31,7 +31,7 @@ public class DockerProcessing {
 
     public void moveTestToContainer(DockerClient client, CreateContainerResponse container) {
         String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
-        String testContainerPath = "/src/test/java/org/jacp";
+        String testContainerPath = "/ProcessingService/src/test/java/org/jacp";
         System.out.println(testHostPath);
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
@@ -42,9 +42,9 @@ public class DockerProcessing {
         String txtReportHostPath = String.format("./testReports/fromContainer/%s.txt", MessageProcessor.className);
         String xmlReportHostPath = String.format("./testReports/fromContainer/TEST-%s.xml", MessageProcessor.testClassName);
         String performanceReportHostPath = "./testReports/fromContainer/performance.json";
-        String txtReportContainerPath = String.format("/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
-        String xmlReportContainerPath = String.format("/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
-        String performanceReportContainerPath = "/org/jacp/target/surefire-reports/performance.json";
+        String txtReportContainerPath = String.format("/ProcessingService/org/jacp/target/surefire-reports/%s.txt", MessageProcessor.className);
+        String xmlReportContainerPath = String.format("/ProcessingService/org/jacp/target/surefire-reports/TEST-%s.xml", MessageProcessor.testClassName);
+        String performanceReportContainerPath = "/ProcessingService/org/jacp/target/surefire-reports/performance.json";
 
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
@@ -100,8 +100,6 @@ public class DockerProcessing {
     public CreateContainerResponse createContainer(String imageName, DockerClient client) {
         return client.createContainerCmd(imageName)
                 .withName("jacp")
-                //.withCmd("cd", "/jacp")
-                //.withCmd("mvn", "install")
                 .withCmd("sh", "runtests.sh")
                 .exec();
     }

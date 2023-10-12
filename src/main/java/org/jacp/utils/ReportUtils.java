@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 public class ReportUtils {
-    private String xmlReportHostPath = "./testReports/fromContainer";
+    private String xmlReportHostPath = "testReports/fromContainer";
 
     public void getTestResults() {
         Path filePath = Path.of(xmlReportHostPath);
