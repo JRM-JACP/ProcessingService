@@ -47,9 +47,9 @@ public class JavaClassProcessor {
             testClassWriter.write(testImports + "import org.jacp." + className + ";\n" + test);
             testClassWriter.close();
 
-            startDockerJava.startContainers();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        startDockerJava.startContainers();
     }
 }

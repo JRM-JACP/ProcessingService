@@ -14,6 +14,9 @@ import java.io.IOException;
 public class StartDockerJava {
 
     @Autowired
+    ReportUtils reportUtils;
+
+    @Autowired
     DockerProcessing dockerProcessing;
 
     public void startContainers() {
@@ -30,14 +33,13 @@ public class StartDockerJava {
         dockerProcessing.startDockerContainer(dockerClient, container);
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(60000);
             dockerProcessing.moveSureFireReportToHost(dockerClient, container);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
-
-        ReportUtils reportUtils = new ReportUtils();
-        reportUtils.getTestResults();
+        finally {
+            dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
+        }
     }
 }
