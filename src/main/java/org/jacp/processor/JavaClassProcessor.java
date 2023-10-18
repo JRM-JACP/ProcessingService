@@ -1,5 +1,6 @@
 package org.jacp.processor;
 
+import org.jacp.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +16,7 @@ import java.util.UUID;
 @Component
 public class JavaClassProcessor {
     @Autowired
-    StartDockerJava startDockerJava;
-
-    public static String randomPackageName;
+    private StartDockerJava startDockerJava;
 
     public static String generatePackageName() {
         UUID uuid = UUID.randomUUID();
@@ -25,9 +24,9 @@ public class JavaClassProcessor {
     }
 
     public void createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
-        randomPackageName = generatePackageName();
-        String sourcePath = String.format("toResult/%s/source", randomPackageName);
-        String testPath = String.format("toResult/%s/test", randomPackageName);
+        StringUtils.randomPackageName = generatePackageName();
+        String sourcePath = String.format(StringUtils.sourcePath, StringUtils.randomPackageName);
+        String testPath = String.format(StringUtils.testPath, StringUtils.randomPackageName);
         File file = new File(sourcePath);
         File testFile = new File(testPath);
         file.mkdirs();
@@ -35,16 +34,16 @@ public class JavaClassProcessor {
         try {
             String filePath = String.format(file + "/%s.java", className);
             BufferedWriter sourceClassWriter = new BufferedWriter(new FileWriter(filePath));
-            sourceClassWriter.write("package org.jacp;");
+            sourceClassWriter.write(StringUtils.PACKAGE);
             sourceClassWriter.newLine();
             sourceClassWriter.write(imports + "\n" + solution);
             sourceClassWriter.close();
 
             String testFilePath = String.format(testFile + "/%s.java", testClassName);
             BufferedWriter testClassWriter = new BufferedWriter(new FileWriter(testFilePath));
-            testClassWriter.write("package org.jacp;");
+            testClassWriter.write(StringUtils.PACKAGE);
             testClassWriter.newLine();
-            testClassWriter.write(testImports + "import org.jacp." + className + ";\n" + test);
+            testClassWriter.write(testImports + test);
             testClassWriter.close();
 
         } catch (IOException e) {

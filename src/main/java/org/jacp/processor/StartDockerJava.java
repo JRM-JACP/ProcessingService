@@ -5,6 +5,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.jacp.utils.ReportUtils;
+import org.jacp.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,6 @@ public class StartDockerJava {
     DockerProcessing dockerProcessing;
 
     public void startContainers() {
-
         DefaultDockerClientConfig config = dockerProcessing.getDefaultDockerConfig();
         DockerHttpClient httpClient = dockerProcessing.getDockerHttpClient(config);
         DockerClient dockerClient = dockerProcessing.getDockerClientInstance(config, httpClient);
@@ -33,7 +33,7 @@ public class StartDockerJava {
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
-        String path = String.format("%s%s", DockerProcessing.hostPath, JavaClassProcessor.randomPackageName);
+        String path = String.format("%s%s", StringUtils.hostPath, StringUtils.randomPackageName);
         File file = new File(path);
         try {
             Thread.sleep(40000);
@@ -43,6 +43,7 @@ public class StartDockerJava {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            reportUtils.getTestResults();
             dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
         }
     }

@@ -10,6 +10,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
+import org.jacp.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,30 +21,28 @@ import java.time.Duration;
 @Service
 public class DockerProcessing {
 
-    static String hostPath = "./toResult/";
-
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container) {
-        String exampleHostPath = String.format("%s%s/source/%s.java", hostPath, JavaClassProcessor.randomPackageName, MessageProcessor.className);
-        String exampleContainerPath = "/ProcessingService/src/main/java/org/jacp";
+        String exampleHostPath = String.format(StringUtils.exampleHostPath, StringUtils.hostPath, StringUtils.randomPackageName, StringUtils.className);
+        String exampleContainerPath = StringUtils.exampleContainerPath;
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
                 .withRemotePath(exampleContainerPath).exec();
     }
 
     public void moveTestToContainer(DockerClient client, CreateContainerResponse container) {
-        String testHostPath = String.format("./toResult/%s/test/%s.java", JavaClassProcessor.randomPackageName, MessageProcessor.testClassName);
-        String testContainerPath = "/ProcessingService/src/test/java/org/jacp";
+        String testHostPath = String.format(StringUtils.testHostPath, StringUtils.randomPackageName, StringUtils.testClassName);
+        String testContainerPath = StringUtils.testContainerHostPath;
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
                 .withRemotePath(testContainerPath).exec();
     }
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container) throws IOException {
-        String parentDirectory = String.format("testReports/fromContainer/%s/", JavaClassProcessor.randomPackageName);
-        String txtReportHostPath = String.format("%s%s.txt", parentDirectory, MessageProcessor.testClassName);
-        String xmlReportHostPath = String.format("%sTEST-%s.xml", parentDirectory, MessageProcessor.testClassName);
-        String txtReportContainerPath = String.format("/ProcessingService/target/surefire-reports/org.jacp.%s.txt", MessageProcessor.testClassName);
-        String xmlReportContainerPath = String.format("/ProcessingService/target/surefire-reports/TEST-org.jacp.%s.xml", MessageProcessor.testClassName);
+        String reportHostPath = String.format(StringUtils.reportHostPath, StringUtils.randomPackageName);
+        String txtReportHostPath = String.format(StringUtils.txtReportHostPath, reportHostPath, StringUtils.testClassName);
+        String xmlReportHostPath = String.format(StringUtils.xmlReportHostPath, reportHostPath, StringUtils.className);
+        String txtReportContainerPath = String.format(StringUtils.txtReportContainerPath, StringUtils.testClassName);
+        String xmlReportContainerPath = String.format(StringUtils.xmlReportContainerPath, StringUtils.testClassName);
 
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
@@ -52,7 +51,7 @@ public class DockerProcessing {
                 .copyArchiveFromContainerCmd(container.getId(), xmlReportContainerPath)
                 .exec());
 
-        createReportPath(parentDirectory);
+        createReportPath(reportHostPath);
         unTar(txtReport, new File(txtReportHostPath));
         unTar(xmlReport, new File(xmlReportHostPath));
     }

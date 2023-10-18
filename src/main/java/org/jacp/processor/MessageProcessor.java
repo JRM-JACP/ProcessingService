@@ -1,6 +1,8 @@
 package org.jacp.processor;
 
+import org.jacp.dto.QuestionDto;
 import org.jacp.service.QuestionTestRequest;
+import org.jacp.utils.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +22,17 @@ public class MessageProcessor {
     @Autowired
     private JavaClassProcessor javaClassProcessor;
 
-    public static String className;
-    public static String testClassName;
     private String solution;
+    private Long solutionId;
+    private String imports;
+    private String testImports;
+    private String test;
 
-    public String processMessage(String message) {
-        String solutionIdString = message.substring(message.indexOf("id=") + "id=".length(), message.indexOf(","));
-        solution = message.substring(message.indexOf("solution=") + "solution=".length(), message.indexOf(", tags="));
-        className = message.substring(message.indexOf("class") + "class".length(), message.indexOf("{")).trim();
-        Long solutionId = Long.parseLong(solutionIdString);
+    public void processMessage(QuestionDto question) {
+        solutionId = question.getId();
+        solution = question.getSolution();
 
         responseToQuestion(solutionId);
-        return className;
     }
 
     public void responseToQuestion(Long id) {
@@ -40,16 +41,13 @@ public class MessageProcessor {
         processRequestToQuestion(Objects.requireNonNull(response.getBody()));
     }
 
-    public String processRequestToQuestion(String responseGetBody) {
+    public void processRequestToQuestion(String responseGetBody) {
         JSONObject jsonObject = new JSONObject(responseGetBody.substring(responseGetBody.indexOf("{")));
 
-        String imports = jsonObject.getString("imports");
-        String testImports = jsonObject.getString("testImports");
-        String test = jsonObject.getString("test");
+        imports = jsonObject.getString("imports");
+        testImports = jsonObject.getString("testImports");
+        test = jsonObject.getString("test");
 
-        testClassName = test.substring(test.indexOf("class") + "class".length(), test.indexOf("{")).trim();
-
-        javaClassProcessor.createJavaClass(imports, testImports, className, testClassName, solution, test);
-        return testClassName;
+        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.className, StringUtils.testClassName, solution, test);
     }
 }
