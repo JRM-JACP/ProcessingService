@@ -15,6 +15,7 @@ import java.util.UUID;
  */
 @Component
 public class JavaClassProcessor {
+
     @Autowired
     private StartDockerJava startDockerJava;
 

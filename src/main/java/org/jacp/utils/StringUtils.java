@@ -1,9 +1,12 @@
 package org.jacp.utils;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @author saffchen created on 16.10.2023
  */
 
+@Component
 public class StringUtils {
     public static String randomPackageName;
     public static String sourcePath = "toResult/%s/source";

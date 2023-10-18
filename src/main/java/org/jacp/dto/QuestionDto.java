@@ -1,6 +1,6 @@
 package org.jacp.dto;
 
-import lombok.*;
+import lombok.Data;
 
 /**
  * @author saffchen created on 16.10.2023
