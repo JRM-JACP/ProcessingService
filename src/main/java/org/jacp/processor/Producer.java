@@ -3,7 +3,7 @@ package org.jacp.processor;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.jacp.entity.QuestionSolution;
+import org.jacp.entity.QuestionEntity;
 
 import java.util.Properties;
 import java.util.concurrent.Future;
@@ -18,13 +18,13 @@ public class Producer {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.springframework.kafka.support.serializer.JsonSerializer");
 
-        KafkaProducer<String, QuestionSolution> producer = new KafkaProducer<>(props);
+        KafkaProducer<String, QuestionEntity> producer = new KafkaProducer<>(props);
 
-        ProducerRecord<String, QuestionSolution> record =
+        ProducerRecord<String, QuestionEntity> record =
                 new ProducerRecord<>("jacp-competition-solutions",
-                        new QuestionSolution(1L,
+                        new QuestionEntity(1L,
                                 "MakeUpperCase",
-                                "public class Upper{public static String MakeUpperCase(String str){return str.toUpperCase();}}",
+                                "public class Solution{public static String MakeUpperCase(String str){return str.toUpperCase();}}",
                                 "STRING",
                                 "EASY"));
 

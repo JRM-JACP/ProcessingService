@@ -12,10 +12,10 @@ import java.util.Map;
 
 @Service
 public class ReportUtils {
-    private String xmlReportHostPath = "testReports/fromContainer";
 
-    public void getTestResults() {
-        Path filePath = Path.of(xmlReportHostPath);
+    public void getTestResults(String randomPackageName) {
+        String reportHostPath = String.format(StringUtils.reportHostPath, randomPackageName);
+        Path filePath = Path.of(reportHostPath);
         final SurefireReportParser surefireReportParser = new SurefireReportParser(
                 Collections.singletonList(filePath.toFile()),
                 new NullConsoleLogger());

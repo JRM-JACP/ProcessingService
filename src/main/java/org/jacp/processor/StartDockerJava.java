@@ -5,6 +5,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.jacp.utils.ReportUtils;
+import org.jacp.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,34 +16,34 @@ import java.io.IOException;
 public class StartDockerJava {
 
     @Autowired
-    ReportUtils reportUtils;
+    private ReportUtils reportUtils;
 
     @Autowired
-    DockerProcessing dockerProcessing;
+    private DockerProcessing dockerProcessing;
 
-    public void startContainers() {
-
+    public void startContainers(String randomPackageName) {
         DefaultDockerClientConfig config = dockerProcessing.getDefaultDockerConfig();
         DockerHttpClient httpClient = dockerProcessing.getDockerHttpClient(config);
         DockerClient dockerClient = dockerProcessing.getDockerClientInstance(config, httpClient);
 
         CreateContainerResponse container = dockerProcessing
-                .createContainer("jrmjacp:1.0", dockerClient);
-        dockerProcessing.moveExampleToContainer(dockerClient, container);
-        dockerProcessing.moveTestToContainer(dockerClient, container);
+                .createContainer("jrmjacp:1.0", dockerClient, randomPackageName);
+        dockerProcessing.moveExampleToContainer(dockerClient, container, randomPackageName);
+        dockerProcessing.moveTestToContainer(dockerClient, container, randomPackageName);
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
-        String path = String.format("%s%s", DockerProcessing.hostPath, JavaClassProcessor.randomPackageName);
+        String path = String.format("%s%s", StringUtils.hostPath, randomPackageName);
         File file = new File(path);
         try {
             Thread.sleep(40000);
-            dockerProcessing.moveSureFireReportToHost(dockerClient, container);
+            dockerProcessing.moveSureFireReportToHost(dockerClient, container, randomPackageName);
             Thread.sleep(20000);
             dockerProcessing.deleteSourceFile(file);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            reportUtils.getTestResults(randomPackageName);
             dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
         }
     }
