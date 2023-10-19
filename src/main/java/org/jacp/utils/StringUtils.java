@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StringUtils {
-    public static String randomPackageName;
     public static String sourcePath = "toResult/%s/source";
     public static String testPath = "toResult/%s/test";
     public static String className = "Solution";

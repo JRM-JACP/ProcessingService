@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author saffchen created on 12.09.2023
@@ -27,6 +28,12 @@ public class MessageProcessor {
     private String imports;
     private String testImports;
     private String test;
+    private String randomPackageName;
+
+    public static String generatePackageName() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 
     public void processMessage(QuestionDto question) {
         solutionId = question.getId();
@@ -47,7 +54,8 @@ public class MessageProcessor {
         imports = jsonObject.getString("imports");
         testImports = jsonObject.getString("testImports");
         test = jsonObject.getString("test");
+        randomPackageName = generatePackageName();
 
-        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.className, StringUtils.testClassName, solution, test);
+        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.className, StringUtils.testClassName, solution, test, randomPackageName);
     }
 }

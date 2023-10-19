@@ -13,8 +13,8 @@ import java.util.Map;
 @Service
 public class ReportUtils {
 
-    public void getTestResults() {
-        String reportHostPath = String.format(StringUtils.reportHostPath, StringUtils.randomPackageName);
+    public void getTestResults(String randomPackageName) {
+        String reportHostPath = String.format(StringUtils.reportHostPath, randomPackageName);
         Path filePath = Path.of(reportHostPath);
         final SurefireReportParser surefireReportParser = new SurefireReportParser(
                 Collections.singletonList(filePath.toFile()),

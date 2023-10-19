@@ -19,15 +19,9 @@ public class JavaClassProcessor {
     @Autowired
     private StartDockerJava startDockerJava;
 
-    public static String generatePackageName() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
-    public void createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test) {
-        StringUtils.randomPackageName = generatePackageName();
-        String sourcePath = String.format(StringUtils.sourcePath, StringUtils.randomPackageName);
-        String testPath = String.format(StringUtils.testPath, StringUtils.randomPackageName);
+    public void createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test, String randomPackageName) {
+        String sourcePath = String.format(StringUtils.sourcePath, randomPackageName);
+        String testPath = String.format(StringUtils.testPath, randomPackageName);
         File file = new File(sourcePath);
         File testFile = new File(testPath);
         file.mkdirs();
@@ -50,6 +44,6 @@ public class JavaClassProcessor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        startDockerJava.startContainers();
+        startDockerJava.startContainers(randomPackageName);
     }
 }
