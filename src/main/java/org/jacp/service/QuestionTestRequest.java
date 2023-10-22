@@ -1,6 +1,7 @@
 package org.jacp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class QuestionTestRequest {
 
-    private final static String URL = "http://localhost:8082/api/v1/imports/{id}";
+    @Value("${url.questionService}")
+    private String URL;
 
     @Autowired
     public RestTemplate restTemplate() {

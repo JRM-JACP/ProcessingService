@@ -1,5 +1,6 @@
-package org.jacp.utils;
+package org.jacp.processor;
 
+import org.jacp.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;

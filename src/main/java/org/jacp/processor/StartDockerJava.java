@@ -33,7 +33,7 @@ public class StartDockerJava {
 
         dockerProcessing.startDockerContainer(dockerClient, container);
 
-        String path = String.format("%s%s", StringUtils.hostPath, randomPackageName);
+        String path = String.format("%s%s", StringUtils.HOST_PATH, randomPackageName);
         File file = new File(path);
         try {
             Thread.sleep(40000);

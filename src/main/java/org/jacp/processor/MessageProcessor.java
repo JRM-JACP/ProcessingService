@@ -6,7 +6,7 @@ import org.jacp.utils.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,8 @@ import java.util.UUID;
 /**
  * @author saffchen created on 12.09.2023
  */
-@Component
+
+@Service
 public class MessageProcessor {
 
     @Autowired
@@ -56,6 +57,6 @@ public class MessageProcessor {
         test = jsonObject.getString("test");
         randomPackageName = generatePackageName();
 
-        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.className, StringUtils.testClassName, solution, test, randomPackageName);
+        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.CLASS_NAME, StringUtils.TEST_CLASS_NAME, solution, test, randomPackageName);
     }
 }

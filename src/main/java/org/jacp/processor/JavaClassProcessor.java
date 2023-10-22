@@ -1,16 +1,16 @@
 package org.jacp.processor;
 
-import org.jacp.utils.JavaClassCreator;
 import org.jacp.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 /**
  * @author saffchen created on 13.09.2023
  */
-@Component
+
+@Service
 public class JavaClassProcessor {
 
     @Autowired
@@ -20,8 +20,8 @@ public class JavaClassProcessor {
     private JavaClassCreator javaClassCreator;
 
     public void createJavaClass(String imports, String testImports, String className, String testClassName, String solution, String test, String randomPackageName) {
-        String sourcePath = String.format(StringUtils.sourcePath, randomPackageName);
-        String testPath = String.format(StringUtils.testPath, randomPackageName);
+        String sourcePath = String.format(StringUtils.SOURCE_PATH, randomPackageName);
+        String testPath = String.format(StringUtils.TEST_PATH, randomPackageName);
         File file = new File(sourcePath);
         File testFile = new File(testPath);
         file.mkdirs();

@@ -22,3 +22,5 @@ spring:
           ddl-auto: none
 server:
   port: 8083
+url:
+  questionService: "http://localhost:8082/api/v1/imports/{id}"

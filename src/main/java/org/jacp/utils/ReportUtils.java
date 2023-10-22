@@ -14,7 +14,7 @@ import java.util.Map;
 public class ReportUtils {
 
     public void getTestResults(String randomPackageName) {
-        String reportHostPath = String.format(StringUtils.reportHostPath, randomPackageName);
+        String reportHostPath = String.format(StringUtils.REPORT_HOST_PATH, randomPackageName);
         Path filePath = Path.of(reportHostPath);
         final SurefireReportParser surefireReportParser = new SurefireReportParser(
                 Collections.singletonList(filePath.toFile()),

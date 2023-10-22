@@ -10,7 +10,6 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
-import org.apache.kafka.common.protocol.types.Field;
 import org.jacp.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,27 +22,27 @@ import java.time.Duration;
 public class DockerProcessing {
 
     public void moveExampleToContainer(DockerClient client, CreateContainerResponse container, String randomPackageName) {
-        String exampleHostPath = String.format(StringUtils.exampleHostPath, StringUtils.hostPath, randomPackageName, StringUtils.className);
-        String exampleContainerPath = StringUtils.exampleContainerPath;
+        String exampleHostPath = String.format(StringUtils.EXAMPLE_HOST_PATH, StringUtils.HOST_PATH, randomPackageName, StringUtils.CLASS_NAME);
+        String exampleContainerPath = StringUtils.EXAMPLE_CONTAINER_PATH;
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(exampleHostPath)
                 .withRemotePath(exampleContainerPath).exec();
     }
 
     public void moveTestToContainer(DockerClient client, CreateContainerResponse container, String randomPackageName) {
-        String testHostPath = String.format(StringUtils.testHostPath, randomPackageName, StringUtils.testClassName);
-        String testContainerPath = StringUtils.testContainerHostPath;
+        String testHostPath = String.format(StringUtils.TEST_HOST_PATH, randomPackageName, StringUtils.TEST_CLASS_NAME);
+        String testContainerPath = StringUtils.TEST_CONTAINER_HOST_PATH;
         client.copyArchiveToContainerCmd(container.getId())
                 .withHostResource(testHostPath)
                 .withRemotePath(testContainerPath).exec();
     }
 
     public void moveSureFireReportToHost(DockerClient client, CreateContainerResponse container, String randomPackageName) throws IOException {
-        String reportHostPath = String.format(StringUtils.reportHostPath, randomPackageName);
-        String txtReportHostPath = String.format(StringUtils.txtReportHostPath, reportHostPath, StringUtils.testClassName);
-        String xmlReportHostPath = String.format(StringUtils.xmlReportHostPath, reportHostPath, StringUtils.className);
-        String txtReportContainerPath = String.format(StringUtils.txtReportContainerPath, StringUtils.testClassName);
-        String xmlReportContainerPath = String.format(StringUtils.xmlReportContainerPath, StringUtils.testClassName);
+        String reportHostPath = String.format(StringUtils.REPORT_HOST_PATH, randomPackageName);
+        String txtReportHostPath = String.format(StringUtils.TXT_REPORT_HOST_PATH, reportHostPath, StringUtils.TEST_CLASS_NAME);
+        String xmlReportHostPath = String.format(StringUtils.XML_REPORT_HOST_PATH, reportHostPath, StringUtils.CLASS_NAME);
+        String txtReportContainerPath = String.format(StringUtils.TXT_REPORT_CONTAINER_PATH, StringUtils.TEST_CLASS_NAME);
+        String xmlReportContainerPath = String.format(StringUtils.XML_REPORT_CONTAINER_PATH, StringUtils.TEST_CLASS_NAME);
 
         TarArchiveInputStream txtReport = new TarArchiveInputStream(client
                 .copyArchiveFromContainerCmd(container.getId(), txtReportContainerPath)
