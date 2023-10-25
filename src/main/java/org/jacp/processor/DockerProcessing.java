@@ -1,7 +1,10 @@
 package org.jacp.processor;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -125,5 +128,30 @@ public class DockerProcessing {
             }
         }
         file.delete();
+    }
+
+    public void waitForTestCompletion(DockerClient dockerClient, CreateContainerResponse container, String randomPackageName) {
+        LogContainerCmd logCmd = dockerClient.logContainerCmd(container.getId());
+        logCmd.withFollowStream(true);
+        logCmd.withStdOut(true);
+
+        try {
+            logCmd.exec(new ResultCallback.Adapter<>() {
+                @Override
+                public void onNext(Frame item) {
+                    String logLine = new String(item.getPayload());
+                    if (logLine.contains("BUILD SUCCESS")) {
+                        try {
+                            moveSureFireReportToHost(dockerClient, container, randomPackageName);
+                            close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }).awaitCompletion();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

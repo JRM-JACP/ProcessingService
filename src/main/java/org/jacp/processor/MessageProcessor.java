@@ -1,14 +1,15 @@
 package org.jacp.processor;
 
-import org.jacp.dto.QuestionDto;
+import org.jacp.dto.QuestionSolutionDto;
+import org.jacp.dto.QuestionTestDto;
+import org.jacp.entity.QuestionTestEntity;
+import org.jacp.mapper.QuestionMapper;
 import org.jacp.service.QuestionTestRequest;
 import org.jacp.utils.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -22,41 +23,37 @@ public class MessageProcessor {
     private QuestionTestRequest service;
 
     @Autowired
-    private JavaClassProcessor javaClassProcessor;
+    private QuestionMapper mapper;
 
-    private String solution;
-    private Long solutionId;
-    private String imports;
-    private String testImports;
-    private String test;
-    private String randomPackageName;
+    @Autowired
+    private JavaClassDockerManager javaClassDockerManager;
 
     public static String generatePackageName() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
 
-    public void processMessage(QuestionDto question) {
-        solutionId = question.getId();
-        solution = question.getSolution();
+    public void processMessage(QuestionSolutionDto question) {
+        Long solutionId = question.getId();
+        String content = question.getSolution();
 
-        responseToQuestion(solutionId);
+        responseToQuestion(solutionId, content);
     }
 
-    public void responseToQuestion(Long id) {
-        ResponseEntity<String> response = service.getImportAndTest(id);
+    public void responseToQuestion(Long id, String content) {
+        ResponseEntity<QuestionTestEntity> response = service.getImportAndTest(id);
 
-        processRequestToQuestion(Objects.requireNonNull(response.getBody()));
+        QuestionTestDto questionTestDto = mapper.testDto(response.getBody());
+
+        processRequestToQuestion(questionTestDto, content);
     }
 
-    public void processRequestToQuestion(String responseGetBody) {
-        JSONObject jsonObject = new JSONObject(responseGetBody.substring(responseGetBody.indexOf("{")));
+    public void processRequestToQuestion(QuestionTestDto questionTestDto, String content) {
+        String imports = questionTestDto.getImports();
+        String testImports = questionTestDto.getTestImports();
+        String test = questionTestDto.getTest();
+        String randomPackageName = generatePackageName();
 
-        imports = jsonObject.getString("imports");
-        testImports = jsonObject.getString("testImports");
-        test = jsonObject.getString("test");
-        randomPackageName = generatePackageName();
-
-        javaClassProcessor.createJavaClass(imports, testImports, StringUtils.CLASS_NAME, StringUtils.TEST_CLASS_NAME, solution, test, randomPackageName);
+        javaClassDockerManager.createAndRunJavaClassInDocker(imports, testImports, StringUtils.CLASS_NAME, StringUtils.TEST_CLASS_NAME, content, test, randomPackageName);
     }
 }

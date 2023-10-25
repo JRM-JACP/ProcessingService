@@ -1,4 +1,4 @@
-package org.jacp.processor;
+package org.jacp.kafka;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -11,7 +11,8 @@ import java.util.concurrent.Future;
 /**
  * @author saffchen created on 29.09.2023
  */
-public class Producer {
+public class ProducerIntegrationTest {
+
     public static void main(String[] args) {
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:29092");
@@ -37,6 +38,5 @@ public class Producer {
             e.printStackTrace();
         }
         producer.close();
-
     }
 }

@@ -7,7 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class QuestionDto {
+public class QuestionSolutionDto {
     private Long id;
     private String solution;
 }

@@ -17,7 +17,7 @@ docker images
 ```
 ### Application running
 
-Run the org.jacp.processor.StartDockerJava.java class
+Run the org.jacp.processor.DockerJavaContainerStarter.java class
 
 ### Attention
 - While the application is running Maven get the dependencies

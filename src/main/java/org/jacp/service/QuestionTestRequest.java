@@ -1,5 +1,6 @@
 package org.jacp.service;
 
+import org.jacp.entity.QuestionTestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +14,17 @@ import org.springframework.web.client.RestTemplate;
 public class QuestionTestRequest {
 
     @Value("${url.questionService}")
-    private String URL;
+    private String url;
+
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public QuestionTestRequest(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<String> getImportAndTest(Long id) {
+    public ResponseEntity<QuestionTestEntity> getImportAndTest(Long id) {
 
-        return restTemplate().getForEntity(URL, String.class, id);
+        return restTemplate.getForEntity(url, QuestionTestEntity.class, id);
     }
 }

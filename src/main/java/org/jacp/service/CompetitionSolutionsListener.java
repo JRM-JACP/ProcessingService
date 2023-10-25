@@ -1,7 +1,7 @@
 package org.jacp.service;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.jacp.dto.QuestionDto;
+import org.jacp.dto.QuestionSolutionDto;
 import org.jacp.entity.QuestionEntity;
 import org.jacp.mapper.QuestionMapper;
 import org.jacp.processor.MessageProcessor;
@@ -24,7 +24,7 @@ public class CompetitionSolutionsListener {
     @KafkaListener(topics = "${spring.kafka.template.default-topic}",
             groupId = "${spring.kafka.consumer.group-id}")
     public void consume(ConsumerRecord<?, QuestionEntity> consumerRecord) {
-        QuestionDto message = questionMapper.questionDto(consumerRecord.value());
+        QuestionSolutionDto message = questionMapper.questionDto(consumerRecord.value());
         messageProcessor.processMessage(message);
     }
 }
