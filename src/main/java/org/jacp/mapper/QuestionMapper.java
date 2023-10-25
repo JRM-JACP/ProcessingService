@@ -1,7 +1,9 @@
 package org.jacp.mapper;
 
-import org.jacp.dto.QuestionDto;
+import org.jacp.dto.QuestionSolutionDto;
+import org.jacp.dto.QuestionTestDto;
 import org.jacp.entity.QuestionEntity;
+import org.jacp.entity.QuestionTestEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
@@ -11,5 +13,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.FIELD)
 public interface QuestionMapper {
-    QuestionDto questionDto(QuestionEntity question);
+    QuestionSolutionDto questionDto(QuestionEntity question);
+    QuestionTestDto testDto(QuestionTestEntity questionTest);
 }
