@@ -39,10 +39,10 @@ public class DockerJavaContainerStarter {
         dockerProcessing.startDockerContainer(dockerClient, container);
 
         String path = String.format("%s%s", StringUtils.HOST_PATH, randomPackageName);
-        File sorceFile = new File(path);
+        File sourceFile = new File(path);
         try {
             dockerProcessing.waitForTestCompletion(dockerClient, container, randomPackageName);
-            dockerProcessing.deleteSourceFile(sorceFile);
+            dockerProcessing.deleteSourceFile(sourceFile);
         } finally {
             reportUtils.printTestResults(randomPackageName);
             dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);

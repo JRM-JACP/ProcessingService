@@ -22,13 +22,9 @@ public class JavaClassDockerManager {
     public void createAndRunJavaClassInDocker(String imports, String testImports, String className, String testClassName, String content, String testContent, String randomPackageName) {
         String sourcePath = String.format(StringUtils.SOURCE_PATH, randomPackageName);
         String testPath = String.format(StringUtils.TEST_PATH, randomPackageName);
-        File directory = new File(sourcePath);
-        File testDirectory = new File(testPath);
-        directory.mkdirs();
-        testDirectory.mkdirs();
 
-        javaClassCreator.createClass(directory, className, imports, content);
-        javaClassCreator.createClass(testDirectory, testClassName, testImports, testContent);
+        javaClassCreator.createClass(sourcePath, className, imports, content);
+        javaClassCreator.createClass(testPath, testClassName, testImports, testContent);
 
         dockerJavaContainerStarter.startContainers(randomPackageName);
     }

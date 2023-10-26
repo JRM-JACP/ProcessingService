@@ -16,9 +16,13 @@ import java.io.IOException;
 @Slf4j
 @Service
 public class JavaClassCreator {
-    public void createClass(File directory, String className, String imports, String content) {
+    public void createClass(String sourcePath, String className, String imports, String content) {
         try {
-            String filePath = String.format(directory + "/%s.java", className);
+            File sourceDirectory = new File(sourcePath);
+            if (!sourceDirectory.exists()) {
+                sourceDirectory.mkdirs();
+            }
+            String filePath = String.format(sourceDirectory + "/%s.java", className);
             BufferedWriter sourceClassWriter = new BufferedWriter(new FileWriter(filePath));
             sourceClassWriter.write(StringUtils.PACKAGE);
             sourceClassWriter.newLine();
