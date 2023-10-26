@@ -8,7 +8,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.jacp.AbstractIntegrationBaseTest;
-import org.jacp.entity.QuestionSolution;
+import org.jacp.entity.QuestionEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -43,7 +43,7 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
     @Value(value = "${spring.kafka.consumer.group-id}")
     private String groupId;
 
-    public ProducerFactory<String, QuestionSolution> producerFactory() {
+    public ProducerFactory<String, QuestionEntity> producerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
@@ -51,7 +51,7 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
         return new DefaultKafkaProducerFactory<>(props);
     }
 
-    public ConsumerFactory<String, QuestionSolution> consumerFactory() {
+    public ConsumerFactory<String, QuestionEntity> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServer);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializer);
@@ -59,10 +59,10 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         return new DefaultKafkaConsumerFactory<>(props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(QuestionSolution.class));
+                new JsonDeserializer<>(QuestionEntity.class));
     }
 
-    QuestionSolution questionSolution = new QuestionSolution(1L,
+    QuestionEntity questionSolution = new QuestionEntity(1L,
             "Test Problem",
             "Test Solution",
             "STRING",
@@ -70,22 +70,22 @@ class CompetitionSolutionsListenerTest extends AbstractIntegrationBaseTest {
 
     @Test
     void produce() {
-        KafkaProducer<String, QuestionSolution> producer = new KafkaProducer<>(producerFactory().getConfigurationProperties());
+        KafkaProducer<String, QuestionEntity> producer = new KafkaProducer<>(producerFactory().getConfigurationProperties());
 
-        ProducerRecord<String, QuestionSolution> record = new ProducerRecord<>(topic, questionSolution);
+        ProducerRecord<String, QuestionEntity> record = new ProducerRecord<>(topic, questionSolution);
 
         producer.close();
     }
 
     @Test
     void consumeSuccessful() {
-        KafkaConsumer<String, QuestionSolution> consumer = new KafkaConsumer<>(consumerFactory().getConfigurationProperties());
+        KafkaConsumer<String, QuestionEntity> consumer = new KafkaConsumer<>(consumerFactory().getConfigurationProperties());
         consumer.subscribe(Collections.singleton(topic));
 
-        ConsumerRecord<?, QuestionSolution> record =
+        ConsumerRecord<?, QuestionEntity> record =
                 new ConsumerRecord<>(topic, 0, 0, null, questionSolution);
 
-        QuestionSolution receivedQuestionSolution = record.value();
+        QuestionEntity receivedQuestionSolution = record.value();
 
         assertEquals(questionSolution.getProblem(), receivedQuestionSolution.getProblem());
         assertEquals(questionSolution.getSolution(), receivedQuestionSolution.getSolution());

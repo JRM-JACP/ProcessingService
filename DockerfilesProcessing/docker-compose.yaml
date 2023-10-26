@@ -18,6 +18,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - '29092:29092'
+
   init-kafka:
     image: confluentinc/cp-kafka:${CONFLUENT_VERSION:-latest}
     container_name: init-kafka
@@ -36,6 +37,7 @@ services:
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:9092 --list
       "
+
   akhq:
     image: tchiotludo/akhq
     container_name: akhq
@@ -59,6 +61,7 @@ services:
       - '9090:8080'
     depends_on:
       - kafka
+
   postgres:
     image: postgres:14.4-alpine
     container_name: processingservice_db
@@ -71,7 +74,8 @@ services:
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d/
     ports:
-      - '5432:5432'
+      - '5433:5432'
+
   app:
     image: processingservice:1.0
     build:
@@ -85,4 +89,4 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     ports:
-      - '8080:8080'
+      - '8083:8080'
