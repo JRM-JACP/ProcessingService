@@ -10,12 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class QuestionSolution {
-
+public class QuestionEntity {
     private Long id;
     private String problem;
     private String solution;
     private String tags;
     private String difficulty;
-
 }
