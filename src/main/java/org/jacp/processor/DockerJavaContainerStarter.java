@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jacp.utils.ReportUtils;
 import org.jacp.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,6 +16,9 @@ import java.io.File;
 @Slf4j
 @Service
 public class DockerJavaContainerStarter {
+
+    @Value("${app.delete-source-file}")
+    private boolean isDelete;
 
     private final ReportUtils reportUtils;
 
@@ -42,7 +46,9 @@ public class DockerJavaContainerStarter {
         File sourceFile = new File(path);
         try {
             dockerProcessing.waitForTestCompletion(dockerClient, container, randomPackageName);
-            dockerProcessing.deleteSourceFile(sourceFile);
+            if(isDelete == true) {
+                dockerProcessing.deleteSourceFile(sourceFile);
+            }
         } finally {
             reportUtils.printTestResults(randomPackageName);
             dockerProcessing.stopAndRemoveDockerContainer(dockerClient, container);
