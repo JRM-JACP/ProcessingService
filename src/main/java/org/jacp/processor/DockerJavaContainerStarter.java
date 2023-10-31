@@ -46,7 +46,7 @@ public class DockerJavaContainerStarter {
         File sourceFile = new File(path);
         try {
             dockerProcessing.waitForTestCompletion(dockerClient, container, randomPackageName);
-            if(isDelete == true) {
+            if (isDelete) {
                 dockerProcessing.deleteSourceFile(sourceFile);
             }
         } finally {
