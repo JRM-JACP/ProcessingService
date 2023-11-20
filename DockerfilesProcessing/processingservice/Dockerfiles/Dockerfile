@@ -7,6 +7,7 @@ RUN mkdir -p ProcessingService/src/test/java/org/jacp
 
 WORKDIR /ProcessingService
 
+
 COPY pom.xml .
 COPY runtests.sh .
 
