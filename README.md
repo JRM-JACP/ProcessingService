@@ -2,9 +2,6 @@
 > This example is a prototype version of ProcessingService
 
 ## Setup
-
-- Copy local .m2/repository/ to ~/ProcessingService/m2/repository/
-
 ### Preparation and Building of Docker Image 
 
 - Clone this repository to your host
