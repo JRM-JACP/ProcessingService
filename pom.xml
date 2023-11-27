@@ -221,7 +221,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./prepare.sh</executable>
+                            <executable>./copyLocalM2.sh</executable>
                         </configuration>
                     </execution>
                 </executions>
