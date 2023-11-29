@@ -41,6 +41,7 @@
         <dockerjava.version>3.3.3</dockerjava.version>
         <surfire.version>3.1.2</surfire.version>
         <httpcore5.version>5.2.3</httpcore5.version>
+        <exec-maven-plugin.version>3.1.1</exec-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -205,6 +206,23 @@
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>run-bash-script</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>./copyLocalM2.sh</executable>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

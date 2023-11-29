@@ -2,7 +2,6 @@
 > This example is a prototype version of ProcessingService
 
 ## Setup
-
 ### Preparation and Building of Docker Image 
 
 - Clone this repository to your host
