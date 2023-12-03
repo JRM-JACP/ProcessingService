@@ -13,4 +13,3 @@ COPY runtests.sh .
 RUN chmod u+x ./runtests.sh
 
 RUN mvn -B dependency:resolve dependency:resolve-plugins
-
