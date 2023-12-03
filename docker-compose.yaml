@@ -79,7 +79,7 @@ services:
   app:
     image: processingservice:1.0
     build:
-      context: ./processingservice
+      context: Processing/processingservice
 
     container_name: processingservice
     depends_on:
