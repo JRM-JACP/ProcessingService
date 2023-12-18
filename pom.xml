@@ -41,6 +41,7 @@
         <dockerjava.version>3.3.3</dockerjava.version>
         <surfire.version>3.1.2</surfire.version>
         <httpcore5.version>5.2.3</httpcore5.version>
+        <exec-maven-plugin.version>3.1.1</exec-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -209,28 +210,18 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.plugin.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>copy-jar-to-docker-context</id>
+                        <id>run-bash-script</id>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>
-                                copy-resources
-                            </goal>
+                            <goal>exec</goal>
                         </goals>
-                        <phase>install</phase>
                         <configuration>
-                            <outputDirectory>DockerfilesProcessing/processingservice</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/target</directory>
-                                    <includes>
-                                        <include>ProcessingService-1.0-SNAPSHOT.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
+                            <executable>./copyLocalM2.sh</executable>
                         </configuration>
                     </execution>
                 </executions>

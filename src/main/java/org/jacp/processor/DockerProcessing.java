@@ -4,7 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
-import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -97,8 +98,17 @@ public class DockerProcessing {
     }
 
     public CreateContainerResponse createContainer(String imageName, DockerClient client, String randomPackageName) {
+        String userDir = System.getProperty("user.dir");
+        String m2Local = "/m2/repository/";
+        String m2Remote = "/root/.m2/repository/";
+        Volume m2Volume = new Volume(m2Remote);
+        HostConfig hostConfig = HostConfig.newHostConfig()
+                .withBinds(new Bind(userDir+m2Local, m2Volume, AccessMode.rw));
+
         return client.createContainerCmd(imageName)
                 .withName(randomPackageName)
+                .withVolumes(m2Volume)
+                .withHostConfig(hostConfig)
                 .withCmd("sh", "runtests.sh")
                 .exec();
     }
@@ -125,7 +135,7 @@ public class DockerProcessing {
             return;
 
         if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
+            for (File f : Objects.requireNonNull(file.listFiles())) {
                 deleteSourceFile(f);
             }
         }
