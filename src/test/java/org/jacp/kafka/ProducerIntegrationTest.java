@@ -28,7 +28,7 @@ public class ProducerIntegrationTest {
                                 "MakeUpperCase",
                                 "public class Solution{public static String MakeUpperCase(String str){return str.toUpperCase();}}",
                                 "STRING",
-                                "EASYHARD"));
+                                "EASY"));
 
         Future<RecordMetadata> metadata = producer.send(record);
         producer.flush();
