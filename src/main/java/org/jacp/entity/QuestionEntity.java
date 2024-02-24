@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class QuestionEntity {
     private Long id;
+    private Long competitionId;
     private String problem;
     private String solution;
     private String tags;

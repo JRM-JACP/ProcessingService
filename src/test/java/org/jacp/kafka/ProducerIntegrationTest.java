@@ -24,6 +24,7 @@ public class ProducerIntegrationTest {
         ProducerRecord<String, QuestionEntity> record =
                 new ProducerRecord<>("jacp-competition-solutions",
                         new QuestionEntity(1L,
+                                1L,
                                 "MakeUpperCase",
                                 "public class Solution{public static String MakeUpperCase(String str){return str.toUpperCase();}}",
                                 "STRING",
