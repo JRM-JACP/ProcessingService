@@ -152,7 +152,7 @@ public class DockerProcessing {
                 @Override
                 public void onNext(Frame item) {
                     String logLine = new String(item.getPayload());
-                    if (logLine.contains("BUILD SUCCESS")) {
+                    if (logLine.contains("BUILD SUCCESS") || logLine.contains("BUILD FAILURE")) {
                         try {
                             moveSureFireReportToHost(dockerClient, container, randomPackageName);
                             close();
