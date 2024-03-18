@@ -1,7 +1,6 @@
 package org.jacp.processor;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.model.*;
@@ -14,12 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
+import org.jacp.config.ExecStartResultCallback;
 import org.jacp.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -103,7 +105,7 @@ public class DockerProcessing {
         String m2Remote = "/root/.m2/repository/";
         Volume m2Volume = new Volume(m2Remote);
         HostConfig hostConfig = HostConfig.newHostConfig()
-                .withBinds(new Bind(userDir+m2Local, m2Volume, AccessMode.rw));
+                .withBinds(new Bind(userDir + m2Local, m2Volume, AccessMode.rw));
 
         return client.createContainerCmd(imageName)
                 .withName(randomPackageName)
@@ -142,23 +144,50 @@ public class DockerProcessing {
         file.delete();
     }
 
+    private void generateCompilationErrorReport(String randomPackageName, String fullLog) throws IOException {
+        String reportHostPath = String.format(StringUtils.REPORT_HOST_PATH, randomPackageName);
+        String txtReportHostPath = String.format(StringUtils.TXT_REPORT_HOST_PATH, reportHostPath, StringUtils.TEST_CLASS_NAME);
+
+        createReportPath(reportHostPath);
+
+        File file = new File(txtReportHostPath);
+        FileWriter writer = new FileWriter(file);
+        writer.write(fullLog);
+        writer.close();
+    }
+
     public void waitForTestCompletion(DockerClient dockerClient, CreateContainerResponse container, String randomPackageName) {
-        LogContainerCmd logCmd = dockerClient.logContainerCmd(container.getId());
-        logCmd.withFollowStream(true);
-        logCmd.withStdOut(true);
+        LogContainerCmd logCmd = dockerClient.logContainerCmd(container.getId())
+                .withFollowStream(true)
+                .withStdOut(true);
 
         try {
-            logCmd.exec(new ResultCallback.Adapter<>() {
+            logCmd.exec(new ExecStartResultCallback() {
+                private final StringBuilder log = new StringBuilder();
+                private Boolean isCompileError = false;
+
                 @Override
-                public void onNext(Frame item) {
-                    String logLine = new String(item.getPayload());
+                public void onNext(Frame frame) {
+                    String logLine = new String(frame.getPayload(), StandardCharsets.UTF_8);
+                    log.append(logLine);
+                    if (logLine.contains("COMPILATION ERROR")) {
+                        isCompileError = true;
+                    }
                     if (logLine.contains("BUILD SUCCESS") || logLine.contains("BUILD FAILURE")) {
-                        try {
+                        complete();
+                    }
+                }
+
+                private void complete() {
+                    try {
+                        if (isCompileError) {
+                            generateCompilationErrorReport(randomPackageName, log.toString());
+                        } else {
                             moveSureFireReportToHost(dockerClient, container, randomPackageName);
-                            close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
                         }
+                        close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }).awaitCompletion();
